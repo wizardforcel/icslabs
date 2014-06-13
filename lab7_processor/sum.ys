@@ -1,0 +1,55 @@
+# sum.ys
+# Zhang Zichen 5110369009
+
+	.pos 0
+init:
+	irmovl Stack, %esp
+	irmovl Stack, %ebp
+	call Main
+	halt
+	
+# Sample linked list
+	.align 4
+ele1:
+	.long 0x00a
+	.long ele2
+ele2:
+	.long 0x0b0
+	.long ele3
+ele3:
+	.long 0xc00
+	.long 0
+	
+#void main()
+Main:
+	pushl %ebp
+	rrmovl %esp, %ebp
+	irmovl ele1, %eax
+	pushl %eax
+	call SumList
+	irmovl $4, %ecx
+	addl %ecx, %esp
+	rrmovl %ebp, %esp
+	popl %ebp
+	ret
+
+#int sum_list(list_ptr ls)
+SumList:
+	pushl %ebp
+	rrmovl %esp, %ebp
+	xorl %eax, %eax		#int val = 0;
+	mrmovl 8(%ebp), %ecx	#ld. ls
+LStart:
+	andl %ecx, %ecx 
+	je LEnd
+	mrmovl (%ecx), %edx		
+	addl %edx, %eax		#val += ls->val;
+	mrmovl 4(%ecx), %ecx	#ls = ls->next;
+	jmp LStart
+LEnd:
+	popl %ebp
+	ret
+	
+# Stack
+	.pos 0x100
+Stack:
